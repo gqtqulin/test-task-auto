@@ -10,7 +10,7 @@ import (
 func (h *Handler) GetAllCars(c *gin.Context) {
 	cars, err := h.service.Car.GetAll()
 	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
+		errorResponse(c, http.StatusInternalServerError, "internal server error")
 		return
 	}
 
@@ -32,7 +32,7 @@ func (h *Handler) GetCar(c *gin.Context) {
 
 	car, err := h.service.Car.Get(uint(numId))
 	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
+		errorResponse(c, http.StatusInternalServerError, "internal server error")
 		return
 	}
 
@@ -44,13 +44,13 @@ func (h *Handler) AddCar(c *gin.Context) {
 
 	err := c.ShouldBindBodyWithJSON(&car)
 	if err != nil {
-		errorResponse(c, http.StatusBadRequest, err.Error())
+		errorResponse(c, http.StatusBadRequest, "json format error")
 		return
 	}
 
 	id, err := h.service.Car.Create(&car)
 	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
+		errorResponse(c, http.StatusInternalServerError, "internal server error")
 		return
 	}
 
@@ -74,7 +74,7 @@ func (h *Handler) DeleteCar(c *gin.Context) {
 
 	err = h.service.Car.Delete(uint(numId))
 	if err != nil {
-		errorResponse(c, http.StatusInternalServerError, err.Error())
+		errorResponse(c, http.StatusInternalServerError, "internal server error")
 		return
 	}
 

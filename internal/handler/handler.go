@@ -5,6 +5,7 @@ import (
 	"github.com/gqtqulin/test-task-auto/internal/service"
 )
 
+// TODO: на интерфейс
 type Handler struct {
 	service *service.Service
 }
