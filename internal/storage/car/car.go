@@ -2,9 +2,9 @@ package carstore
 
 import (
 	"fmt"
+	"github.com/gqtqulin/test-task-auto/internal/domain"
 	"github.com/jackc/pgx"
 	"github.com/jackc/pgx/pgtype"
-	"test-task-auto/internal/domain"
 )
 
 const (

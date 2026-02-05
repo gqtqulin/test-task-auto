@@ -1,9 +1,9 @@
 package storage
 
 import (
+	"github.com/gqtqulin/test-task-auto/internal/domain"
+	carstore "github.com/gqtqulin/test-task-auto/internal/storage/car"
 	"github.com/jackc/pgx"
-	"test-task-auto/internal/domain"
-	carstore "test-task-auto/internal/storage/car"
 )
 
 type Car interface {

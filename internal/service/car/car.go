@@ -1,8 +1,8 @@
 package carserv
 
 import (
-	"test-task-auto/internal/domain"
-	"test-task-auto/internal/storage"
+	"github.com/gqtqulin/test-task-auto/internal/domain"
+	"github.com/gqtqulin/test-task-auto/internal/storage"
 )
 
 type CarService struct {

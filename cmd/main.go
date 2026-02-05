@@ -3,16 +3,16 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/gqtqulin/test-task-auto/internal/config"
+	"github.com/gqtqulin/test-task-auto/internal/handler"
+	"github.com/gqtqulin/test-task-auto/internal/server"
+	"github.com/gqtqulin/test-task-auto/internal/service"
+	"github.com/gqtqulin/test-task-auto/internal/storage"
 	"github.com/jackc/pgx"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
-	"test-task-auto/internal/config"
-	"test-task-auto/internal/handler"
-	"test-task-auto/internal/server"
-	"test-task-auto/internal/service"
-	"test-task-auto/internal/storage"
 )
 
 func main() {

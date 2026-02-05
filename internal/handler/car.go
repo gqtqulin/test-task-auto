@@ -2,9 +2,9 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/gqtqulin/test-task-auto/internal/domain"
 	"net/http"
 	"strconv"
-	"test-task-auto/internal/domain"
 )
 
 func (h *Handler) GetAllCars(c *gin.Context) {

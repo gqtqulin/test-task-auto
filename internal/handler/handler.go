@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"test-task-auto/internal/service"
+	"github.com/gqtqulin/test-task-auto/internal/service"
 )
 
 type Handler struct {

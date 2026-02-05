@@ -1,9 +1,9 @@
 package service
 
 import (
-	"test-task-auto/internal/domain"
-	carserv "test-task-auto/internal/service/car"
-	"test-task-auto/internal/storage"
+	"github.com/gqtqulin/test-task-auto/internal/domain"
+	carserv "github.com/gqtqulin/test-task-auto/internal/service/car"
+	"github.com/gqtqulin/test-task-auto/internal/storage"
 )
 
 type CarService interface {
