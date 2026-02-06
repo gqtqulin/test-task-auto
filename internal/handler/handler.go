@@ -2,17 +2,20 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/gqtqulin/test-task-auto/internal/logger"
 	"github.com/gqtqulin/test-task-auto/internal/service"
 )
 
 // TODO: на интерфейс
 type Handler struct {
 	service *service.Service
+	log     *logger.Logger
 }
 
-func NewHandler(service *service.Service) *Handler {
+func NewHandler(service *service.Service, log *logger.Logger) *Handler {
 	return &Handler{
 		service: service,
+		log:     log,
 	}
 }
 

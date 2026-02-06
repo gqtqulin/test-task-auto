@@ -5,24 +5,27 @@ import (
 	"fmt"
 	"github.com/gqtqulin/test-task-auto/internal/config"
 	"github.com/gqtqulin/test-task-auto/internal/handler"
+	"github.com/gqtqulin/test-task-auto/internal/logger"
 	"github.com/gqtqulin/test-task-auto/internal/server"
 	"github.com/gqtqulin/test-task-auto/internal/service"
 	"github.com/gqtqulin/test-task-auto/internal/storage"
 	"github.com/jackc/pgx"
-	"log"
+	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
 func main() {
-	// TODO: перевести на viper
+	// TODO: расширить уровни логирования
+	log := logger.NewLogger(slog.LevelInfo)
+
 	cfg, err := config.InitConfig()
 	if err != nil {
-		log.Fatal(err)
+		log.Info("init config err", "error", err)
+		os.Exit(1)
 	}
 
-	// TODO: сделать без dsn
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		cfg.DBHost,
 		cfg.DBPort,
@@ -30,41 +33,44 @@ func main() {
 		cfg.DBPassword,
 		cfg.DBName,
 	)
-	log.Println("dsn:", dsn)
 
 	connCfg, err := pgx.ParseDSN(dsn)
 	if err != nil {
-		log.Fatal(err)
+		log.Info("failed to parse dsn")
+		os.Exit(1)
 	}
 
-	// TODO: можно на pgxpool
+	// TODO: при многопоточном соединении переписать на pgxpool
 	conn, err := pgx.Connect(connCfg)
 	if err != nil {
-		log.Fatal(err)
+		log.Info("failed to connect to database")
+		os.Exit(1)
 	}
 
 	store := storage.NewStorage(conn)
 	s := service.NewService(store)
-	h := handler.NewHandler(s)
+	h := handler.NewHandler(s, log)
 
 	srv := server.Server{}
 	go func() {
 		if err := srv.Run(cfg.ServerPort, h.InitRoutes()); err != nil {
-			log.Fatal(err)
+			log.Error("failed to start server", "error", err)
 		}
 	}()
 
-	log.Println("server started")
+	log.Info("server started")
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
 	if err := srv.Shutdown(context.Background()); err != nil {
-		log.Fatal(err)
+		log.Info("failed to shutdown server", "error", err)
+		os.Exit(1)
 	}
 
 	if err := conn.Close(); err != nil {
-		log.Fatal(err)
+		log.Info("failed to close connection", "error", err)
+		os.Exit(1)
 	}
 }
