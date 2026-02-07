@@ -47,13 +47,15 @@ func main() {
 		os.Exit(1)
 	}
 
-	store := storage.NewStorage(conn)
-	s := service.NewService(store)
-	h := handler.NewHandler(s, log)
+	carStorage := storage.NewCarStorage(conn)
+
+	carService := service.NewCarService(carStorage)
+
+	hand := handler.NewHandler(carService, log)
 
 	srv := server.Server{}
 	go func() {
-		if err := srv.Run(cfg.ServerPort, h.InitRoutes()); err != nil {
+		if err := srv.Run(cfg.ServerPort, hand.InitRoutes()); err != nil {
 			log.Error("failed to start server", "error", err)
 		}
 	}()

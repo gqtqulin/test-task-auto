@@ -6,16 +6,15 @@ import (
 	"github.com/gqtqulin/test-task-auto/internal/service"
 )
 
-// TODO: на интерфейс
 type Handler struct {
-	service *service.Service
-	log     *logger.Logger
+	carService service.Car
+	log        *logger.Logger
 }
 
-func NewHandler(service *service.Service, log *logger.Logger) *Handler {
+func NewHandler(carService service.Car, log *logger.Logger) *Handler {
 	return &Handler{
-		service: service,
-		log:     log,
+		carService: carService,
+		log:        log,
 	}
 }
 

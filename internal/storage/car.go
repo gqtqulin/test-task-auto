@@ -1,4 +1,4 @@
-package carstore
+package storage
 
 import (
 	"fmt"
@@ -11,24 +11,31 @@ const (
 	carTable = "car"
 )
 
+type Car interface {
+	Create(car *domain.Car) (uint, error)
+	Get(id uint) (*domain.Car, error)
+	GetAll() ([]domain.Car, error)
+	Delete(id uint) error
+}
+
 type CarStorage struct {
 	conn *pgx.Conn
 }
 
-func NewCarStorage(conn *pgx.Conn) *CarStorage {
+func NewCarStorage(conn *pgx.Conn) Car {
 	return &CarStorage{
 		conn: conn,
 	}
 }
 
-func (c *CarStorage) Create(car *domain.Car) (uint, error) {
+func (s *CarStorage) Create(car *domain.Car) (uint, error) {
 	query := fmt.Sprintf(`
 		INSERT INTO %s (mark, model, owner_count, price, currency, options)
 		VALUES ($1, $2, $3, $4, $5, $6) RETURNING car_id;
 	`, carTable)
 	var id uint
 
-	err := c.conn.QueryRow(query,
+	err := s.conn.QueryRow(query,
 		car.Mark,
 		car.Model,
 		car.OwnerCount,
@@ -43,12 +50,12 @@ func (c *CarStorage) Create(car *domain.Car) (uint, error) {
 	return id, nil
 }
 
-func (c *CarStorage) Get(id uint) (*domain.Car, error) {
+func (s *CarStorage) Get(id uint) (*domain.Car, error) {
 	query := fmt.Sprintf(`SELECT * FROM %s WHERE car_id = $1;`, carTable)
 	var options pgtype.VarcharArray
 
 	car := &domain.Car{}
-	err := c.conn.QueryRow(query,
+	err := s.conn.QueryRow(query,
 		id,
 	).Scan(
 		&car.CarId,
@@ -73,9 +80,9 @@ func (c *CarStorage) Get(id uint) (*domain.Car, error) {
 	return car, nil
 }
 
-func (c *CarStorage) GetAll() ([]domain.Car, error) {
+func (s *CarStorage) GetAll() ([]domain.Car, error) {
 	query := fmt.Sprintf(`SELECT * FROM %s;`, carTable)
-	rows, err := c.conn.Query(query)
+	rows, err := s.conn.Query(query)
 	if err != nil {
 		return nil, err
 	}
@@ -115,10 +122,10 @@ func (c *CarStorage) GetAll() ([]domain.Car, error) {
 	return cars, nil
 }
 
-func (c *CarStorage) Delete(id uint) error {
+func (s *CarStorage) Delete(id uint) error {
 	query := fmt.Sprintf(`DELETE FROM %s WHERE car_id = $1;`, carTable)
 
-	tag, err := c.conn.Exec(query, id)
+	tag, err := s.conn.Exec(query, id)
 	if err != nil {
 		return err
 	}
