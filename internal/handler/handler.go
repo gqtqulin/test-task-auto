@@ -2,16 +2,16 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/gqtqulin/test-task-auto/internal/logger"
 	"github.com/gqtqulin/test-task-auto/internal/service"
+	"log/slog"
 )
 
 type Handler struct {
 	carService service.Car
-	log        *logger.Logger
+	log        *slog.Logger
 }
 
-func NewHandler(carService service.Car, log *logger.Logger) *Handler {
+func NewHandler(carService service.Car, log *slog.Logger) *Handler {
 	return &Handler{
 		carService: carService,
 		log:        log,
