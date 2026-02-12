@@ -2,16 +2,23 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/gqtqulin/test-task-auto/internal/service"
+	"github.com/gqtqulin/test-task-auto/internal/domain"
 	"log/slog"
 )
 
+type CarService interface {
+	Create(domain.Car) (int, error)
+	Get(id int) (domain.Car, error)
+	GetAll() ([]domain.Car, error)
+	Delete(id int) error
+}
+
 type Handler struct {
-	carService service.Car
+	carService CarService
 	log        *slog.Logger
 }
 
-func NewHandler(carService service.Car, log *slog.Logger) *Handler {
+func NewHandler(carService CarService, log *slog.Logger) *Handler {
 	return &Handler{
 		carService: carService,
 		log:        log,

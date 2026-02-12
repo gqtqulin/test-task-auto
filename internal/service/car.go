@@ -2,21 +2,20 @@ package service
 
 import (
 	"github.com/gqtqulin/test-task-auto/internal/domain"
-	"github.com/gqtqulin/test-task-auto/internal/storage"
 )
 
-type Car interface {
-	Create(domain.Car) (int, error)
+type CarStorage interface {
+	Create(car domain.Car) (int, error)
 	Get(id int) (domain.Car, error)
 	GetAll() ([]domain.Car, error)
 	Delete(id int) error
 }
 
 type CarService struct {
-	storage storage.Car
+	storage CarStorage
 }
 
-func NewCarService(storage storage.Car) Car {
+func NewCarService(storage CarStorage) *CarService {
 	return &CarService{
 		storage: storage,
 	}

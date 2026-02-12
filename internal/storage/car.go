@@ -7,18 +7,11 @@ import (
 	"github.com/jackc/pgx/pgtype"
 )
 
-type Car interface {
-	Create(car domain.Car) (int, error)
-	Get(id int) (domain.Car, error)
-	GetAll() ([]domain.Car, error)
-	Delete(id int) error
-}
-
 type CarStorage struct {
 	conn *pgx.Conn
 }
 
-func NewCarStorage(conn *pgx.Conn) Car {
+func NewCarStorage(conn *pgx.Conn) *CarStorage {
 	return &CarStorage{
 		conn: conn,
 	}
