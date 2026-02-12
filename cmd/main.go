@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/gqtqulin/test-task-auto/internal/config"
 	"github.com/gqtqulin/test-task-auto/internal/handler"
-	"github.com/gqtqulin/test-task-auto/internal/logger"
 	"github.com/gqtqulin/test-task-auto/internal/server"
 	"github.com/gqtqulin/test-task-auto/internal/service"
 	"github.com/gqtqulin/test-task-auto/internal/storage"
@@ -18,7 +17,7 @@ import (
 
 func main() {
 	// TODO: расширить уровни логирования
-	log := logger.NewLogger(slog.LevelInfo)
+	log := initLogger()
 
 	cfg, err := config.InitConfig()
 	if err != nil {
@@ -75,4 +74,13 @@ func main() {
 		log.Info("failed to close connection", "error", err)
 		os.Exit(1)
 	}
+}
+
+func initLogger() *slog.Logger {
+	slogHandler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level:     slog.LevelInfo,
+		AddSource: true,
+	})
+
+	return slog.New(slogHandler)
 }
