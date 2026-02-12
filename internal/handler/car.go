@@ -25,13 +25,13 @@ func (h *Handler) GetCar(c *gin.Context) {
 		return
 	}
 
-	numId, err := strconv.ParseUint(id, 10, 0)
+	numId, err := strconv.Atoi(id)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, "id must be numeric")
 		return
 	}
 
-	car, err := h.carService.Get(uint(numId))
+	car, err := h.carService.Get(numId)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, "internal server error")
 		h.log.Info("get car error", "error", err)
@@ -50,7 +50,7 @@ func (h *Handler) AddCar(c *gin.Context) {
 		return
 	}
 
-	id, err := h.carService.Create(&car)
+	id, err := h.carService.Create(car)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, "internal server error")
 		h.log.Info("add car error", "error", err)
@@ -69,13 +69,13 @@ func (h *Handler) DeleteCar(c *gin.Context) {
 		return
 	}
 
-	numId, err := strconv.ParseUint(id, 10, 0)
+	numId, err := strconv.Atoi(id)
 	if err != nil {
 		errorResponse(c, http.StatusBadRequest, "id must be numeric")
 		return
 	}
 
-	err = h.carService.Delete(uint(numId))
+	err = h.carService.Delete(numId)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, "internal server error")
 		h.log.Info("delete car error", "error", err)

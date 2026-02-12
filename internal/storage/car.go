@@ -7,15 +7,11 @@ import (
 	"github.com/jackc/pgx/pgtype"
 )
 
-const (
-	carTable = "car"
-)
-
 type Car interface {
-	Create(car *domain.Car) (uint, error)
-	Get(id uint) (*domain.Car, error)
+	Create(car domain.Car) (int, error)
+	Get(id int) (domain.Car, error)
 	GetAll() ([]domain.Car, error)
-	Delete(id uint) error
+	Delete(id int) error
 }
 
 type CarStorage struct {
@@ -28,12 +24,12 @@ func NewCarStorage(conn *pgx.Conn) Car {
 	}
 }
 
-func (s *CarStorage) Create(car *domain.Car) (uint, error) {
-	query := fmt.Sprintf(`
-		INSERT INTO %s (mark, model, owner_count, price, currency, options)
+func (s *CarStorage) Create(car domain.Car) (int, error) {
+	query := `
+		INSERT INTO car (mark, model, owner_count, price, currency, options)
 		VALUES ($1, $2, $3, $4, $5, $6) RETURNING car_id;
-	`, carTable)
-	var id uint
+	`
+	var id int
 
 	err := s.conn.QueryRow(query,
 		car.Mark,
@@ -50,11 +46,11 @@ func (s *CarStorage) Create(car *domain.Car) (uint, error) {
 	return id, nil
 }
 
-func (s *CarStorage) Get(id uint) (*domain.Car, error) {
-	query := fmt.Sprintf(`SELECT * FROM %s WHERE car_id = $1;`, carTable)
+func (s *CarStorage) Get(id int) (domain.Car, error) {
+	query := `SELECT * FROM car WHERE car_id = $1;`
 	var options pgtype.VarcharArray
 
-	car := &domain.Car{}
+	car := domain.Car{}
 	err := s.conn.QueryRow(query,
 		id,
 	).Scan(
@@ -67,7 +63,7 @@ func (s *CarStorage) Get(id uint) (*domain.Car, error) {
 		&options,
 	)
 	if err != nil {
-		return nil, err
+		return car, err
 	}
 
 	if options.Status == pgtype.Present {
@@ -81,7 +77,7 @@ func (s *CarStorage) Get(id uint) (*domain.Car, error) {
 }
 
 func (s *CarStorage) GetAll() ([]domain.Car, error) {
-	query := fmt.Sprintf(`SELECT * FROM %s;`, carTable)
+	query := `SELECT * FROM car;`
 	rows, err := s.conn.Query(query)
 	if err != nil {
 		return nil, err
@@ -122,8 +118,8 @@ func (s *CarStorage) GetAll() ([]domain.Car, error) {
 	return cars, nil
 }
 
-func (s *CarStorage) Delete(id uint) error {
-	query := fmt.Sprintf(`DELETE FROM %s WHERE car_id = $1;`, carTable)
+func (s *CarStorage) Delete(id int) error {
+	query := `DELETE FROM car WHERE car_id = $1;`
 
 	tag, err := s.conn.Exec(query, id)
 	if err != nil {

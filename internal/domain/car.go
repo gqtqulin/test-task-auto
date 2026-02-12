@@ -9,11 +9,11 @@ const (
 )
 
 type Car struct {
-	CarId      uint64   `json:"car_id" omitempty:"true"`
+	CarId      int64    `json:"car_id" omitempty:"true"`
 	Mark       string   `json:"mark" required:"true"`
 	Model      string   `json:"model" required:"true"`
-	OwnerCount uint64   `json:"owner_count"`
-	Price      uint64   `json:"price"`
+	OwnerCount int64    `json:"owner_count"`
+	Price      int64    `json:"price"`
 	Currency   Currency `json:"currency"`
 	Options    []string `json:"options" required:"true"`
 }
